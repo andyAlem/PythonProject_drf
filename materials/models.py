@@ -2,6 +2,8 @@ from django.db import models
 
 
 class Course(models.Model):
+    """Класс курса"""
+
     name = models.CharField(
         max_length=150, verbose_name="Курс", help_text="Укажите название курса"
     )
@@ -22,6 +24,8 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """Класс урока"""
+
     name = models.CharField(
         max_length=150, verbose_name="Урок", help_text="Укажите название урока"
     )
@@ -42,6 +46,7 @@ class Lesson(models.Model):
         help_text="Выберите курс",
         blank=True,
         null=True,
+        related_name="lessons",
     )
 
     video_url = models.URLField(

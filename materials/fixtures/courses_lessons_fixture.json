@@ -1,0 +1,151 @@
+[
+  {
+    "model": "materials.course",
+    "pk": 1,
+    "fields": {
+      "name": "Python для начинающих",
+      "image": "",
+      "description": "Базовый курс по Python."
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 2,
+    "fields": {
+      "name": "Django Web Development",
+      "image": "",
+      "description": "Создание веб-приложений с Django."
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 3,
+    "fields": {
+      "name": "Git и GitHub",
+      "image": "",
+      "description": "Контроль версий и командная работа."
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 4,
+    "fields": {
+      "name": "SQL и базы данных",
+      "image": "",
+      "description": "Работа с реляционными базами данных."
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 5,
+    "fields": {
+      "name": "Основы JavaScript",
+      "image": "",
+      "description": "Изучение базового синтаксиса JavaScript."
+    }
+  },
+
+  {
+    "model": "materials.lesson",
+    "pk": 1,
+    "fields": {
+      "name": "Введение в Python",
+      "image": "",
+      "description": "Обзор языка Python.",
+      "course": 1,
+      "video_url": "https://example.com/python-intro"
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 2,
+    "fields": {
+      "name": "Переменные и типы данных",
+      "image": "",
+      "description": "Как работают переменные.",
+      "course": 1,
+      "video_url": "https://example.com/python-vars"
+    }
+  },
+
+  {
+    "model": "materials.lesson",
+    "pk": 3,
+    "fields": {
+      "name": "Установка Django",
+      "image": "",
+      "description": "Подготовка окружения.",
+      "course": 2,
+      "video_url": "https://example.com/django-install"
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 4,
+    "fields": {
+      "name": "Создание проекта",
+      "image": "",
+      "description": "Первый проект Django.",
+      "course": 2,
+      "video_url": "https://example.com/django-start"
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 5,
+    "fields": {
+      "name": "Работа с моделями",
+      "image": "",
+      "description": "Создание моделей данных.",
+      "course": 2,
+      "video_url": "https://example.com/django-models"
+    }
+  },
+
+  {
+    "model": "materials.lesson",
+    "pk": 6,
+    "fields": {
+      "name": "Git init и коммиты",
+      "image": "",
+      "description": "Инициализация репозитория.",
+      "course": 3,
+      "video_url": "https://example.com/git-init"
+    }
+  },
+
+  {
+    "model": "materials.lesson",
+    "pk": 7,
+    "fields": {
+      "name": "Введение в SQL",
+      "image": "",
+      "description": "Базовые SELECT-запросы.",
+      "course": 4,
+      "video_url": "https://example.com/sql-intro"
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 8,
+    "fields": {
+      "name": "Соединения таблиц",
+      "image": "",
+      "description": "INNER, LEFT JOIN и другие.",
+      "course": 4,
+      "video_url": "https://example.com/sql-joins"
+    }
+  },
+
+  {
+    "model": "materials.lesson",
+    "pk": 9,
+    "fields": {
+      "name": "Переменные и функции",
+      "image": "",
+      "description": "Основы JS.",
+      "course": 5,
+      "video_url": "https://example.com/js-vars"
+    }
+  }
+]
