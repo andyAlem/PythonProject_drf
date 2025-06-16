@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from materials.models import Course, Lesson
 from materials.serializers import (CourseDetailSerializer, CourseSerializer,
                                    LessonSerializer)
+from users.permissions import IsModer
 
 
 class CourseViewSet(ModelViewSet):
@@ -15,10 +16,22 @@ class CourseViewSet(ModelViewSet):
     serializer_class = CourseSerializer
 
     def get_serializer_class(self):
+        """Получение сериализатора для определенного курса и вложенных уроков"""
         if self.action == "retrieve":
             return CourseDetailSerializer
-        else:
-            return CourseSerializer
+        return super().get_serializer_class()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_permissions(self):
+        """Права доступа для модераторов"""
+        if self.action in ["create", "destroy"]:
+            self.permission_classes = (~IsModer,)
+        elif self.action in ["update", "retrieve"]:
+            self.permission_classes = (IsModer,)
+        return super().get_permissions()
+
 
 
 class LessonCreateApiView(CreateAPIView):
@@ -26,6 +39,9 @@ class LessonCreateApiView(CreateAPIView):
 
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class LessonListApiView(ListAPIView):
