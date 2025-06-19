@@ -15,6 +15,7 @@ class CourseViewSet(ModelViewSet):
 
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = (IsAuthenticated, IsModer | IsOwner)
 
     def get_serializer_class(self):
         """Получение сериализатора для определенного курса и вложенных уроков"""
@@ -52,6 +53,7 @@ class LessonListApiView(ListAPIView):
 
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = (IsAuthenticated, IsModer | IsOwner)
 
 
 class LessonRetrieveApiView(RetrieveAPIView):
