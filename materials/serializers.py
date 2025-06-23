@@ -3,6 +3,7 @@ from rest_framework.fields import SerializerMethodField
 
 from materials.models import Course, Lesson, Subscription
 from materials.validators import validate_forbidden_links
+from users.models import Payment
 
 
 class CourseSerializer(serializers.ModelSerializer):

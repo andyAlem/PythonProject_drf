@@ -23,3 +23,6 @@ python-dotenv==1.1.0
 sqlparse==0.5.3
 tomli==2.2.1
 typing_extensions==4.13.2
+
+drf-yasg~=1.21.10
+stripe~=12.2.0

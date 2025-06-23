@@ -1,9 +1,12 @@
+from unittest.mock import patch
+
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 
 from materials.models import Course, Lesson
-from users.models import User
+from users.models import Payment, User
 
 
 class CourseTestCase(APITestCase):
@@ -39,3 +42,6 @@ class CourseTestCase(APITestCase):
         response = self.client.post(url, data=data)
         response_data = response.json()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+####### Оплата

@@ -1,12 +1,11 @@
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-    get_object_or_404,
-)
+from rest_framework.decorators import api_view
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView, get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,14 +13,21 @@ from rest_framework.viewsets import ModelViewSet
 
 from materials.models import Course, Lesson, Subscription
 from materials.pagination import CustomPagination
-from materials.serializers import (
-    CourseDetailSerializer,
-    CourseSerializer,
-    LessonSerializer,
-)
+from materials.serializers import (CourseDetailSerializer, CourseSerializer,
+                                   LessonSerializer)
+from materials.services.stripe_service import (create_checkout_session,
+                                               create_stripe_price,
+                                               create_stripe_product)
 from users.permissions import IsModer, IsOwner
+from users.serializers import PaymentSerializer
 
 
+@method_decorator(
+    name="list",
+    decorator=swagger_auto_schema(
+        operation_description="description from swagger_auto_schema via method_decorator"
+    ),
+)
 class CourseViewSet(ModelViewSet):
     """Класс для работы с курсами"""
 
@@ -125,3 +131,43 @@ class SubscriptionAPIView(APIView):
             message = "подписка добавлена"
 
         return Response({"message": message}, status=status.HTTP_200_OK)
+
+
+class StripePaymentView(APIView):
+    """Класс для оплаты курса"""
+
+    def post(self, request):
+        serializer = PaymentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        payment = serializer.save(user=request.user)
+
+        product = create_stripe_product(payment.paid_course.name)
+        price = create_stripe_price(product["id"], payment.amount)
+
+        success_url = (
+            request.build_absolute_uri(reverse("materials:payment-success"))
+            + "?session_id={CHECKOUT_SESSION_ID}"
+        )
+        cancel_url = request.build_absolute_uri(reverse("materials:payment-cancel"))
+
+        session = create_checkout_session(price["id"], success_url, cancel_url)
+
+        payment.stripe_session_id = session["id"]
+        payment.stripe_url = session["url"]
+        payment.save()
+
+        return Response(
+            {"payment_id": payment.id, "stripe_url": payment.stripe_url},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+@api_view(["GET"])
+def payment_success(request):
+    return Response({"message": "Оплата прошла успешно!"})
+
+
+@api_view(["GET"])
+def payment_cancel(request):
+    return Response({"message": "Оплата отменена"})
