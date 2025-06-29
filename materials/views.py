@@ -3,9 +3,14 @@ from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView, get_object_or_404)
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    get_object_or_404,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,11 +18,17 @@ from rest_framework.viewsets import ModelViewSet
 
 from materials.models import Course, Lesson, Subscription
 from materials.pagination import CustomPagination
-from materials.serializers import (CourseDetailSerializer, CourseSerializer,
-                                   LessonSerializer)
-from materials.services.stripe_service import (create_checkout_session,
-                                               create_stripe_price,
-                                               create_stripe_product)
+from materials.serializers import (
+    CourseDetailSerializer,
+    CourseSerializer,
+    LessonSerializer,
+)
+from materials.services.stripe_service import (
+    create_checkout_session,
+    create_stripe_price,
+    create_stripe_product,
+)
+from materials.tasks import send_course_update_email
 from users.permissions import IsModer, IsOwner
 from users.serializers import PaymentSerializer
 
@@ -48,13 +59,19 @@ class CourseViewSet(ModelViewSet):
         """Права доступа для модераторов"""
         if self.action == "create":
             self.permission_classes = (~IsModer,)
-        elif self.action in ["update", "retrieve"]:
+        elif self.action in ["update", "retrieve", "partial_update"]:
             self.permission_classes = (IsModer | IsOwner,)
         elif self.action == "destroy":
             self.permission_classes = (~IsModer | IsOwner,)
         return super().get_permissions()
 
     pagination_class = CustomPagination
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        course_id = self.get_object().id
+        send_course_update_email.delay(course_id)
+        return response
 
 
 class LessonCreateApiView(CreateAPIView):

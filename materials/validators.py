@@ -1,5 +1,4 @@
-from urllib.parse import \
-    urlparse  # https://docs.python.org/3/library/urllib.parse.html
+from urllib.parse import urlparse  # https://docs.python.org/3/library/urllib.parse.html
 
 from rest_framework.serializers import ValidationError
 
