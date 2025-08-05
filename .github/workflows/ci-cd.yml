@@ -31,6 +31,11 @@ jobs:
       - name: Run flake8 linter
         run: flake8 .
 
+      - name: Export environment variables
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+
       - name: Run Django tests
         run: |
           python manage.py migrate
