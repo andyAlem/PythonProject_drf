@@ -10,8 +10,30 @@ jobs:
     name: Lint → Test → Docker → Push → Deploy
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_NAME }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     env:
       DOCKER_IMAGE: andyalem/drf-app
+      POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
 
     steps:
       - name: Checkout code
@@ -31,14 +53,15 @@ jobs:
       - name: Run flake8 linter
         run: flake8 .
 
-      - name: Export environment variables
+      - name: Wait for PostgreSQL to be ready
         run: |
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+          until pg_isready -h localhost -p 5432; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
 
       - name: Run Django tests
-        run: |
-          python manage.py test
+        run: python manage.py test
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
