@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint-test-build-deploy:
-    name: Lint → Docker → Push → Deploy
+    name: Lint → Test → Docker → Push → Deploy
     runs-on: ubuntu-latest
 
     env:
@@ -38,7 +38,6 @@ jobs:
 
       - name: Run Django tests
         run: |
-          python manage.py migrate
           python manage.py test
 
       - name: Log in to Docker Hub
