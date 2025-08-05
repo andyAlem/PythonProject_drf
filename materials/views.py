@@ -32,7 +32,7 @@ from users.serializers import PaymentSerializer
 class CourseViewSet(ModelViewSet):
     """Класс для работы с курсами"""
 
-    queryset = Course.objects.all()
+    queryset = Course.objects.all().order_by("id")
     serializer_class = CourseSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
 
@@ -67,7 +67,7 @@ class CourseViewSet(ModelViewSet):
 class LessonCreateApiView(CreateAPIView):
     """Класс для создания урока"""
 
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().order_by("id")
     serializer_class = LessonSerializer
     permission_classes = (~IsModer, IsAuthenticated)
 
@@ -78,7 +78,7 @@ class LessonCreateApiView(CreateAPIView):
 class LessonListApiView(ListAPIView):
     """Класс для получения списка уроков"""
 
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().order_by("id")
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
     pagination_class = CustomPagination
@@ -87,7 +87,7 @@ class LessonListApiView(ListAPIView):
 class LessonRetrieveApiView(RetrieveAPIView):
     """Класс для получения одного урока"""
 
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().order_by("id")
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
 
@@ -95,7 +95,7 @@ class LessonRetrieveApiView(RetrieveAPIView):
 class LessonUpdateApiView(UpdateAPIView):
     """Класс для обновления урока"""
 
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().order_by("id")
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
 
@@ -103,7 +103,7 @@ class LessonUpdateApiView(UpdateAPIView):
 class LessonDestroyApiView(DestroyAPIView):
     """Класс для удаления урока"""
 
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().order_by("id")
     serializer_class = LessonSerializer
     permission_classes = (
         IsAuthenticated,
