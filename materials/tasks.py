@@ -3,7 +3,6 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 from materials.models import Course, Subscription
-from users.models import User
 
 
 @shared_task
